@@ -1,0 +1,6 @@
+# Local test sandbox: machine-specific skill links, real-corpus
+# pointers, and any generated state -- never part of the repo.
+test/
+
+# macOS noise
+.DS_Store
