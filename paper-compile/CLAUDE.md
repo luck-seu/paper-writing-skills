@@ -1,8 +1,9 @@
 # paper-compile (prototype)
 
 A Claude Code skill that tracks the **writing state** of a LaTeX
-paper: claims, notation/symbols, terminology, labels, numbers, plus
-the machine checks over them. This directory IS the skill package
+paper — this round: the file map (assembly order, file roles,
+headings) and the math notation as actually used. This directory IS
+the skill package
 (SKILL.md at its root), living in the `paper-writing-skills`
 monorepo beside its siblings `paper-scaffold/` (section
 scaffolding — an empty stub) and `paper-init/` (venue bootstrap —
@@ -18,12 +19,12 @@ here.
 ## Design principles (standing rulings)
 
 1. **Minimality — the mechanical layer of writing state.** The
-   skill owns machine views (notation, terminology, labels, numbers,
-   todos), machine checks (any mechanical function of the sources:
-   typography, citation hygiene, dangling labels), and one-time
-   seeding of the curated ledgers (claims, dependencies). Judgment —
-   style, venue policy, claim-hood — belongs to the author and the
-   ledgers; venue bootstrap is the sibling `paper-init/` skill;
+   skill owns machine views (file_map, notation; later build rounds
+   extend the set) and machine checks (any mechanical function of
+   the sources: typography, citation hygiene, dangling labels).
+   Judgment — style, venue policy, claim-hood — belongs to the
+   author and, in later rounds, curated ledgers maintained with the
+   author; venue bootstrap is the sibling `paper-init/` skill;
    repo-side style guides are read as ground truth, never shipped
    here.
 2. **Pull-to-upgrade.** The skill is a self-contained package: no
@@ -37,19 +38,22 @@ here.
    mapping) belongs to ledgers, maintained by the writing skill
    WITH the author. Weakening a claim row is an author-only
    decision.
-4. **Views are disposable, ledgers are durable.** Views regenerate
-   wholesale (`compile.sh`); ledgers are seeded once and never
-   overwritten — their author rulings exist nowhere else.
+4. **Views are disposable.** Views regenerate wholesale
+   (`compile.py`). Curated ledgers, when they arrive in a later
+   round, are durable by design: seeded once, never overwritten —
+   their author rulings exist nowhere else.
 
 ## Layout
 
 - `SKILL.md` — the skill: session loop + artifact ownership.
 - `references/` — one format contract per artifact (read on demand).
-- `scripts/` — home of the state compiler (`compile.sh`, views +
-  ledger seeding) and later the machine-check scripts. Deliberately
-  a README-only placeholder until the framework settles (author
-  instruction, 2026-11-01); see `scripts/README.md` for the planned
-  shape.
+- `scripts/` — home of the state compiler: `compile.py` (the entry
+  point, the only public interface) over `core/` (view-agnostic
+  machinery: `texscan`, `mathmode`, `macromap`, `copilot`) and
+  `views/` (one module per machine view: `file_map`, `notation`;
+  Python, standard library only). The file_map and notation views
+  are built; further views land contract-first. See
+  `scripts/README.md`.
 - Development corpus, OUTSIDE this repo: `~/Workspace/program/AMDB`
   — an svn-severed copy of a real paper (acmart, flat `sec-*.tex`
   layout); it must never interact with its upstream repo and never
@@ -63,14 +67,13 @@ From inside the paper root, via any installed location
 (`~/.claude/skills/`, a paper's `.claude/skills/`, or the repo's
 `test/.claude/skills/` sandbox):
 
-    sh <skills-location>/paper-compile/scripts/compile.sh
+    python3 <skills-location>/paper-compile/scripts/compile.py
 
-or from anywhere: `PAPER_ROOT=path/to/paper sh .../compile.sh`.
-State lands in `$PAPER_ROOT/.copilot/compiled/` (views, disposable)
-and `$PAPER_ROOT/.copilot/ledgers/` (curated, durable).
+or from anywhere: `PAPER_ROOT=path/to/paper python3 .../compile.py`.
+State lands in `$PAPER_ROOT/.copilot/compiled/` (views, disposable).
 
-This is the target interface — the compiler itself is not built yet
-(framework first; see `scripts/README.md`).
+The first cut (the file_map and notation views) is built; later
+build rounds are marked in `scripts/README.md`.
 
 ## Extension points (the 毕设 roadmap)
 
@@ -83,7 +86,7 @@ This is the target interface — the compiler itself is not built yet
 - **Style plug-in**: the target repo ships a style guide; the skill
   reads it as ground truth when present, stays style-agnostic
   itself.
-- **Skill interop**: the view/ledger formats in `references/` are
+- **Skill interop**: the artifact contracts in `references/` are
   the stable API — other skills (e.g. supervisor/reviewer skills)
   read the same files without coupling to this repo's internals.
 
