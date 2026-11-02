@@ -5,11 +5,12 @@ monorepo: **one directory per skill, one repository for all**. Home
 of the graduation-project ("毕设") prototypes — the plan is to extend
 them, not to preserve them.
 
-- `paper-compile/` — writing-state tracking: machine views,
-  curated ledgers, machine checks
+- `paper-compile/` — writing-state tracking: machine views (first
+  cut built: `file_map` + `notation`); curated ledgers and machine
+  checks arrive in later build rounds, contract-first
 - `paper-scaffold/` — section scaffolding: per-section structural
   skeletons under `.copilot/scaffold/`, merged into the section
-  file via the compile map (empty stub)
+  file via paper-compile's file map (empty stub)
 - `paper-init/` — venue bootstrap (empty stub, reserved for the
   graduation-project student to design and build)
 
