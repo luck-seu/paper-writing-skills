@@ -35,11 +35,3 @@ later round and are durable by design.
   and disposable state, and the compiler is verified against the real
   corpus plus disposable out-of-repo synthetic runs (see
   `paper-compile/scripts/README.md`).
-
-## History
-
-The full-featured predecessor (audit checks, style-guide compiler,
-venue ledger, checklist) lives in the MACRO repo. This org repo is
-the deliberate restart: same state-tracking core, no baggage —
-nothing is ported from MACRO without a reason stated in the
-committing skill's `CLAUDE.md`.
